@@ -8,6 +8,18 @@
         <servlet-name>CustomerLoginServlet</servlet-name>
         <servlet-class>com.megacitycab.servlets.CustomerLoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BookRideServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.BookRideServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CancelBookingServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.CancelBookingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminBookingServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.AdminBookingServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomerServlet</servlet-name>
         <url-pattern>/CustomerServlet</url-pattern>
@@ -15,6 +27,18 @@
     <servlet-mapping>
         <servlet-name>CustomerLoginServlet</servlet-name>
         <url-pattern>/CustomerLoginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookRideServlet</servlet-name>
+        <url-pattern>/BookRideServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CancelBookingServlet</servlet-name>
+        <url-pattern>/CancelBookingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminBookingServlet</servlet-name>
+        <url-pattern>/AdminBookingServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customerRegistration.jsp</welcome-file>
