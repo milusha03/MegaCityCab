@@ -36,6 +36,14 @@
         <servlet-name>DeleteCustomerServlet</servlet-name>
         <servlet-class>com.megacitycab.servlets.DeleteCustomerServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddAdminServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.AddAdminServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteAdminServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.DeleteAdminServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomerServlet</servlet-name>
         <url-pattern>/CustomerServlet</url-pattern>
@@ -71,6 +79,14 @@
     <servlet-mapping>
         <servlet-name>DeleteCustomerServlet</servlet-name>
         <url-pattern>/DeleteCustomerServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddAdminServlet</servlet-name>
+        <url-pattern>/AddAdminServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteAdminServlet</servlet-name>
+        <url-pattern>/DeleteAdminServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customerRegistration.jsp</welcome-file>
