@@ -56,6 +56,10 @@
         <servlet-name>DeleteDriverServlet</servlet-name>
         <servlet-class>com.megacitycab.servlets.DeleteDriverServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateProfileServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.UpdateProfileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomerServlet</servlet-name>
         <url-pattern>/CustomerServlet</url-pattern>
@@ -111,6 +115,10 @@
     <servlet-mapping>
         <servlet-name>DeleteDriverServlet</servlet-name>
         <url-pattern>/DeleteDriverServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateProfileServlet</servlet-name>
+        <url-pattern>/UpdateProfileServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customerRegistration.jsp</welcome-file>
