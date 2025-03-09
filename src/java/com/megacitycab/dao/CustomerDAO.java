@@ -5,6 +5,10 @@ import com.megacitycab.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 
 public class CustomerDAO {
     
@@ -37,38 +41,44 @@ public class CustomerDAO {
 
     // Update customer data
     public boolean updateCustomer(int customerId, String fullName, String nic, String email, String phoneNumber, String address, String username, String newPassword) {
-        boolean rowUpdated = false;
-        try (Connection conn = DBConnection.getConnection()) {
-            String sql;
-            PreparedStatement stmt;
+    Connection conn = null;
+    PreparedStatement stmt = null;
 
-            if (newPassword != null && !newPassword.isEmpty()) {
-                sql = "UPDATE customers SET full_name = ?, nic = ?, email = ?, phone_number = ?, address = ?, username = ?, password = ? WHERE customer_id = ?";
-                stmt = conn.prepareStatement(sql);
-                stmt.setString(1, fullName);
-                stmt.setString(2, nic);
-                stmt.setString(3, email);
-                stmt.setString(4, phoneNumber);
-                stmt.setString(5, address);
-                stmt.setString(6, username);
-                stmt.setString(7, newPassword); // Update password only if entered
-                stmt.setInt(8, customerId);
-            } else {
-                sql = "UPDATE customers SET full_name = ?, nic = ?, email = ?, phone_number = ?, address = ?, username = ? WHERE customer_id = ?";
-                stmt = conn.prepareStatement(sql);
-                stmt.setString(1, fullName);
-                stmt.setString(2, nic);
-                stmt.setString(3, email);
-                stmt.setString(4, phoneNumber);
-                stmt.setString(5, address);
-                stmt.setString(6, username);
-                stmt.setInt(7, customerId);
-            }
+    try {
+        conn = DBConnection.getConnection();
+        
+        // Update query: Set password only if newPassword is not null
+        String sql = "UPDATE customers SET full_name=?, nic=?, email=?, phone_number=?, address=?, username=?"
+                   + (newPassword != null ? ", password=?" : "")
+                   + " WHERE customer_id=?";
+        
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, fullName);
+        stmt.setString(2, nic);
+        stmt.setString(3, email);
+        stmt.setString(4, phoneNumber);
+        stmt.setString(5, address);
+        stmt.setString(6, username);
 
-            rowUpdated = stmt.executeUpdate() > 0;
-        } catch (Exception e) {
+        int index = 7;
+        if (newPassword != null) {
+            stmt.setString(index++, newPassword); // Hash already applied in servlet
+        }
+        stmt.setInt(index, customerId);
+
+        int rowsUpdated = stmt.executeUpdate();
+        return rowsUpdated > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowUpdated;
     }
+}
+
 }

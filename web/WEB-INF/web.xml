@@ -60,6 +60,10 @@
         <servlet-name>UpdateProfileServlet</servlet-name>
         <servlet-class>com.megacitycab.servlets.UpdateProfileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditDriverServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.EditDriverServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomerServlet</servlet-name>
         <url-pattern>/CustomerServlet</url-pattern>
@@ -119,6 +123,10 @@
     <servlet-mapping>
         <servlet-name>UpdateProfileServlet</servlet-name>
         <url-pattern>/UpdateProfileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditDriverServlet</servlet-name>
+        <url-pattern>/EditDriverServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customerRegistration.jsp</welcome-file>
