@@ -67,10 +67,12 @@
         <div class="container">
             <a class="navbar-brand" href="customerDashboard.jsp">Mega City Cab</a>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="customerDashboard.jsp">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active" href="customerDashboard.jsp">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="bookRide.jsp">Book a Ride</a></li>
                 <li class="nav-item"><a class="nav-link" href="viewBookings.jsp">My Bookings</a></li>
-                <li class="nav-item"><a class="nav-link active" href="updateProfile.jsp">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="bookingReceipt.jsp">Receipts</a></li>
+                <li class="nav-item"><a class="nav-link" href="updateProfile.jsp">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="help.jsp">Help</a></li>
                 <li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
             </ul>
         </div>

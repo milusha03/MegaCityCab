@@ -19,25 +19,23 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     
     <style>
-        /* Previous styles remain the same */
+        .btn-primary {
+            background-color: #3f51b5;
+            border-color: #3f51b5;
+        }
 
-.btn-primary {
-    background-color: #3f51b5; /* Blue button */
-    border-color: #3f51b5;
-}
+        .btn-primary:hover {
+            background-color: #303f9f;
+            border-color: #303f9f;
+        }
 
-.btn-primary:hover {
-    background-color: #303f9f;
-    border-color: #303f9f;
-}
+        .navbar-light .navbar-nav .nav-link {
+            color: #343a40;
+        }
 
-.navbar-light .navbar-nav .nav-link {
-    color: #343a40; /* Dark gray color for nav links */
-}
-
-.navbar-light .navbar-nav .nav-link:hover {
-    color: #1d2124; /* Slightly darker gray on hover */
-}
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: #1d2124;
+        }
     </style>
 </head>
 <body>
@@ -48,7 +46,9 @@
                 <li class="nav-item"><a class="nav-link active" href="customerDashboard.jsp">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="bookRide.jsp">Book a Ride</a></li>
                 <li class="nav-item"><a class="nav-link" href="viewBookings.jsp">My Bookings</a></li>
+                <li class="nav-item"><a class="nav-link" href="bookingReceipt.jsp">Receipts</a></li>
                 <li class="nav-item"><a class="nav-link" href="updateProfile.jsp">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="help.jsp">Help</a></li>
                 <li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
             </ul>
         </div>
@@ -58,7 +58,7 @@
         <h2>Welcome, <%= session.getAttribute("full_name") %>!</h2>
 
         <div class="row">
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Book a Ride</h5>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">View My Bookings</h5>
@@ -76,12 +76,30 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
+                        <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">View My Receipts</h5>
+                        <p class="card-text">View the receipts for your bookings.</p>
+                        <a href="viewBookings.jsp" class="btn btn-primary">View Receipts</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Update Profile</h5>
                         <p class="card-text">Update your profile information.</p>
                         <a href="updateProfile.jsp" class="btn btn-primary">Update Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Help & Guidelines</h5>
+                        <p class="card-text">Learn how to use the system.</p>
+                        <a href="help.jsp" class="btn btn-primary">Get Help</a>
                     </div>
                 </div>
             </div>

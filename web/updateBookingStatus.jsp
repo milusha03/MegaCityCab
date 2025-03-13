@@ -1,3 +1,4 @@
+<%@ page isErrorPage="true" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.sql.*, com.megacitycab.utils.DBConnection" %>
 <%@ page session="true" %>
@@ -10,37 +11,63 @@
         return;
     }
 
-    // Get the parameters from the form
+    // Get parameters from the form
     String action = request.getParameter("action");
-    int bookingId = Integer.parseInt(request.getParameter("booking_id"));
-    int driverId = Integer.parseInt(request.getParameter("driver_id"));
-    String status = action.equals("Pending") ? "Approved" : "Rejected" ;
-    int vehicleId = -1; // Default to -1 if it's rejected
+    String bookingIdStr = request.getParameter("booking_id");
+    String driverIdStr = request.getParameter("driver_id");
+    String vehicleIdStr = request.getParameter("vehicle_id");
 
-    // Debugging Output
-    out.println("<p>Action: " + action + ", Booking ID: " + bookingId + ", Driver ID: " + driverId + "</p>"); // Debugging line
+    // Validate input parameters
+    if (action == null || bookingIdStr == null) {
+        response.sendRedirect("adminBookings.jsp?error=Invalid input data.");
+        return;
+    }
+
+    int bookingId = 0, driverId = 0, vehicleId = 0;
+    try {
+        bookingId = Integer.parseInt(bookingIdStr);
+        if (action.equals("accept") || action.equals("complete")) {
+            if (driverIdStr == null || vehicleIdStr == null) {
+                response.sendRedirect("adminBookings.jsp?error=Driver and vehicle required.");
+                return;
+            }
+            driverId = Integer.parseInt(driverIdStr);
+            vehicleId = Integer.parseInt(vehicleIdStr);
+        }
+    } catch (NumberFormatException e) {
+        response.sendRedirect("adminBookings.jsp?error=Invalid booking, driver, or vehicle ID.");
+        return;
+    }
+
+    // Determine the status based on action
+    String status = "";
+    if ("accept".equals(action)) {
+        status = "Approved";
+    } else if ("cancel".equals(action)) {
+        status = "Rejected";
+    } else if ("complete".equals(action)) {
+        status = "Completed";
+    } else {
+        response.sendRedirect("adminBookings.jsp?error=Invalid action.");
+        return;
+    }
+
+    // Debugging Output (remove in production)
+    System.out.println("Action: " + action + ", Booking ID: " + bookingId + ", Driver ID: " + driverId + ", Vehicle ID: " + vehicleId);
 
     // Connection and update logic
     Connection conn = null;
     PreparedStatement stmt = null;
-    ResultSet rs = null;
 
     try {
         conn = DBConnection.getConnection();
+        if (conn == null) {
+            response.sendRedirect("adminBookings.jsp?error=Database connection failed.");
+            return;
+        }
 
         if ("accept".equals(action)) {
-            // Get the vehicle_id associated with the selected driver
-            String driverQuery = "SELECT vehicle_id FROM vehicles WHERE vehicle_number = ?";
-            stmt = conn.prepareStatement(driverQuery);
-            stmt.setInt(1, driverId);
-            rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                vehicleId = rs.getInt("vehicle_id");
-            }
-            out.println("<p>Vehicle ID: " + vehicleId + "</p>"); // Debugging line
-
-            // Update the booking status, driver_id, and vehicle_id
+            // Update booking status, assign driver, and vehicle
             String updateQuery = "UPDATE bookings SET status = ?, driver_id = ?, vehicle_id = ? WHERE booking_id = ?";
             stmt = conn.prepareStatement(updateQuery);
             stmt.setString(1, status);
@@ -48,7 +75,13 @@
             stmt.setInt(3, vehicleId);
             stmt.setInt(4, bookingId);
         } else if ("cancel".equals(action)) {
-            // Update the booking status to "Rejected" without changing driver_id or vehicle_id
+            // Update only status to "Rejected"
+            String updateQuery = "UPDATE bookings SET status = ? WHERE booking_id = ?";
+            stmt = conn.prepareStatement(updateQuery);
+            stmt.setString(1, status);
+            stmt.setInt(2, bookingId);
+        } else if ("complete".equals(action)) {
+            // Update status to "Completed"
             String updateQuery = "UPDATE bookings SET status = ? WHERE booking_id = ?";
             stmt = conn.prepareStatement(updateQuery);
             stmt.setString(1, status);
@@ -56,8 +89,6 @@
         }
 
         int updated = stmt.executeUpdate();
-        out.println("<p>Rows Updated: " + updated + "</p>"); // Debugging line
-
         if (updated > 0) {
             response.sendRedirect("adminBookings.jsp?success=Booking " + status.toLowerCase());
         } else {
@@ -67,7 +98,6 @@
         e.printStackTrace();
         response.sendRedirect("adminBookings.jsp?error=Database error.");
     } finally {
-        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
         if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
         if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
     }

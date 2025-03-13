@@ -46,10 +46,10 @@
             var baseFare = 0;
 
             // Set fare based on vehicle type
-            if (vehicleType === "Bike") baseFare = 5;
-            else if (vehicleType === "Car") baseFare = 10;
-            else if (vehicleType === "Minivan") baseFare = 20;
-            else if (vehicleType === "Van") baseFare = 25;
+            if (vehicleType === "Bike") baseFare = 50;
+            else if (vehicleType === "Car") baseFare = 100;
+            else if (vehicleType === "Minivan") baseFare = 125;
+            else if (vehicleType === "Van") baseFare = 170;
             else {
                 alert("Please select a valid vehicle type.");
                 return;
@@ -81,10 +81,12 @@
         <div class="container">
             <a class="navbar-brand" href="customerDashboard.jsp">Mega City Cab</a>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="customerDashboard.jsp">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link active" href="bookRide.jsp">Book a Ride</a></li>
+                <li class="nav-item"><a class="nav-link active" href="customerDashboard.jsp">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="bookRide.jsp">Book a Ride</a></li>
                 <li class="nav-item"><a class="nav-link" href="viewBookings.jsp">My Bookings</a></li>
+                <li class="nav-item"><a class="nav-link" href="bookingReceipt.jsp">Receipts</a></li>
                 <li class="nav-item"><a class="nav-link" href="updateProfile.jsp">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="help.jsp">Help</a></li>
                 <li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
             </ul>
         </div>

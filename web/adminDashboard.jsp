@@ -22,6 +22,7 @@
         <div class="container">
             <a class="navbar-brand" href="adminDashboard.jsp">Mega City Cab Admin</a>
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link active" href="adminDashboard.jsp">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="adminBookings.jsp">Manage Ride Bookings</a></li>
                 <li class="nav-item"><a class="nav-link" href="viewCustomers.jsp">View Customers</a></li>
                 <li class="nav-item"><a class="nav-link" href="addAdmin.jsp">Add New Admin</a></li>

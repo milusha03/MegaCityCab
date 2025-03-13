@@ -1,4 +1,4 @@
-package com.megacitycab.servlets;
+package com.megacitycab.servlets;  // Change this to match your package
 
 import com.megacitycab.dao.DriverDAO;
 import com.megacitycab.model.Driver;
@@ -11,49 +11,26 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public class UpdateDriverServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try {
-        String driverIdStr = request.getParameter("driver_id");
-        System.out.println("Received driver_id: " + driverIdStr); // Debugging
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    int driverId = Integer.parseInt(request.getParameter("driver_id"));
+    String fullName = request.getParameter("full_name");
+    String licenseNumber = request.getParameter("license_number");
+    String phoneNumber = request.getParameter("phone_number");
+    String address = request.getParameter("address");
 
-        if (driverIdStr == null || driverIdStr.isEmpty()) {
-            response.sendRedirect("editDriver.jsp?error=Invalid Driver ID");
-            return;
-        }
+    System.out.println("Updating driver ID: " + driverId); // Debugging
 
-        int driverId = Integer.parseInt(driverIdStr);
-        DriverDAO driverDAO = new DriverDAO();
-        Driver driver = driverDAO.getDriverById(driverId);
+    Driver driver = new Driver(driverId, fullName, licenseNumber, phoneNumber, address);
+    DriverDAO driverDAO = new DriverDAO();
+    boolean updateSuccess = driverDAO.updateDriver(driver);
 
-        if (driver == null) {
-            response.sendRedirect("editDriver.jsp?error=Driver not found!");
-            return;
-        }
+    if (updateSuccess) {
+        response.sendRedirect("driverList.jsp?message=Driver updated successfully");
+    } else {
+        System.out.println("Driver update failed"); // Debugging
+        response.sendRedirect("editDriver.jsp?error=Failed to update driver.");
+    }
 
-        // Get updated data
-        String fullName = request.getParameter("full_name");
-        String licenseNumber = request.getParameter("license_number");
-        String phoneNumber = request.getParameter("phone_number");
-        String address = request.getParameter("address");
-
-        // Update driver details
-        driver.setFullName(fullName);
-        driver.setLicenseNumber(licenseNumber);
-        driver.setPhoneNumber(phoneNumber);
-        driver.setAddress(address);
-
-        // Save update
-        boolean updated = driverDAO.updateDriver(driver);
-        if (updated) {
-            response.sendRedirect("editDriver.jsp?message=Driver updated successfully.");
-        } else {
-            response.sendRedirect("editDriver.jsp?error=Failed to update driver.");
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.sendRedirect("editDriver.jsp?error=Server error.");
     }
 }
-}
-

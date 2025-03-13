@@ -9,26 +9,27 @@ import java.sql.SQLException;
 
 public class DriverDAO {
     public boolean updateDriver(Driver driver) {
-        boolean rowUpdated = false;
-        try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "UPDATE drivers SET full_name=?, license_number=?, phone_number=?, address=? WHERE driver_id=?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(
+             "UPDATE drivers SET full_name=?, license_number=?, phone_number=?, address=? WHERE driver_id=?"
+         )) {
 
-            stmt.setString(1, driver.getFullName());
-            stmt.setString(2, driver.getLicenseNumber());
-            stmt.setString(3, driver.getPhoneNumber());
-            stmt.setString(4, driver.getAddress());
-            stmt.setInt(5, driver.getDriverId());
+        stmt.setString(1, driver.getFullName());
+        stmt.setString(2, driver.getLicenseNumber());
+        stmt.setString(3, driver.getPhoneNumber());
+        stmt.setString(4, driver.getAddress());
+        stmt.setInt(5, driver.getDriverId());
 
-            rowUpdated = stmt.executeUpdate() > 0;
-            stmt.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rowUpdated;
+        int rowsAffected = stmt.executeUpdate();
+        System.out.println("Rows affected: " + rowsAffected); // Debugging
+
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
     
 public Driver getDriverById(int driverId) {
     Driver driver = null;

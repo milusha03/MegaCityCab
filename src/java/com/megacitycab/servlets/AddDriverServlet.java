@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.megacitycab.utils.DBConnection;
 
-
 public class AddDriverServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -21,7 +20,26 @@ public class AddDriverServlet extends HttpServlet {
         String phoneNumber = request.getParameter("phone_number");
         String vehicleNumber = request.getParameter("vehicle_number");
         String vehicleType = request.getParameter("vehicle_type");
-        int capacity = Integer.parseInt(request.getParameter("capacity"));
+        String capacityStr = request.getParameter("capacity");
+
+        // Validate inputs
+        if (fullName == null || fullName.trim().isEmpty() ||
+            licenseNumber == null || licenseNumber.trim().isEmpty() ||
+            phoneNumber == null || phoneNumber.trim().isEmpty() ||
+            vehicleNumber == null || vehicleNumber.trim().isEmpty() ||
+            vehicleType == null || vehicleType.trim().isEmpty() ||
+            capacityStr == null || capacityStr.trim().isEmpty()) {
+            response.sendRedirect("addDrivers.jsp?error=All fields are required.");
+            return;
+        }
+
+        int capacity;
+        try {
+            capacity = Integer.parseInt(capacityStr);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("addDrivers.jsp?error=Invalid capacity value.");
+            return;
+        }
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -30,6 +48,10 @@ public class AddDriverServlet extends HttpServlet {
 
         try {
             conn = DBConnection.getConnection();
+            if (conn == null) {
+                throw new Exception("Database connection failed!");
+            }
+
             conn.setAutoCommit(false); // Start transaction
 
             // Insert into drivers table
@@ -49,15 +71,14 @@ public class AddDriverServlet extends HttpServlet {
                 driverId = rs.getInt(1);
             }
 
-            // Insert into vehicles table
-            if (driverId != -1) {
-                String insertVehicleSQL = "INSERT INTO vehicles (vehicle_number, vehicle_type, capacity) VALUES (?, ?, ?)";
-                pstmt = conn.prepareStatement(insertVehicleSQL);
-                pstmt.setString(1, vehicleNumber);
-                pstmt.setString(2, vehicleType);
-                pstmt.setInt(3, capacity);
-                pstmt.executeUpdate();
-            }
+            // Insert into vehicles table with driver_id
+            String insertVehicleSQL = "INSERT INTO vehicles (vehicle_number, vehicle_type, capacity, driver_id) VALUES (?, ?, ?, ?)";
+            pstmt = conn.prepareStatement(insertVehicleSQL);
+            pstmt.setString(1, vehicleNumber);
+            pstmt.setString(2, vehicleType);
+            pstmt.setInt(3, capacity);
+            pstmt.setInt(4, driverId); // Insert driver_id
+            pstmt.executeUpdate();
 
             conn.commit(); // Commit transaction
             response.sendRedirect("addDrivers.jsp?success=1");
@@ -71,11 +92,12 @@ public class AddDriverServlet extends HttpServlet {
                 ex.printStackTrace();
             }
             e.printStackTrace();
-            response.sendRedirect("addDrivers.jsp?error=1");
+            response.sendRedirect("addDrivers.jsp?error=" + e.getMessage().replace(" ", "%20")); // Show error details
+
         } finally {
-            try { if (rs != null) rs.close(); } catch (Exception e) {}
-            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
+            try { if (rs != null) rs.close(); } catch (Exception e) { e.printStackTrace(); }
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) { e.printStackTrace(); }
+            try { if (conn != null) conn.close(); } catch (Exception e) { e.printStackTrace(); }
         }
     }
 }
