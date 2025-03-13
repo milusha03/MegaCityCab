@@ -983,11 +983,13 @@ exists or setup the property manually. For example like this:
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
         <copyfiles files="${file.reference.mysql-connector-j-9.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.junit_4.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
         <copyfiles files="${file.reference.mysql-connector-j-9.2.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${libs.junit_4.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>
@@ -1030,7 +1032,7 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,-init-cos,compile,compile-jsps,-do-compile-single-jsp,-pre-dist,-do-tmp-dist-with-manifest,-do-tmp-dist-without-manifest,-pre-run-deploy,-pre-nbmodule-run-deploy,-run-deploy-nb,-init-deploy-ant,-deploy-ant,-run-deploy-am,-post-nbmodule-run-deploy,-post-run-deploy,-do-update-breakpoints" name="run-deploy"/>
     <target if="netbeans.home" name="-run-deploy-nb">
-        <nbdeploy clientUrlPart="/MegaCityCabSystem" debugmode="false" forceRedeploy="true"/>
+        <nbdeploy clientUrlPart="${client.urlPart}" debugmode="false" forceRedeploy="${forceRedeploy}"/>
     </target>
     <target name="-init-deploy-ant" unless="netbeans.home">
         <property name="deploy.ant.archive" value="${dist.war}"/>
@@ -1425,6 +1427,41 @@ exists or setup the property manually. For example like this:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
+    <path id="test.classpath">
+    <pathelement location="lib/junit-4.13.2.jar"/> 
+    <pathelement location="lib/mockito-core-5.16.0.jar"/> 
+    </path>
+    <project name="MegaCityCabSystem" default="test" basedir=".">
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="build" />
+    <property name="lib.dir" value="lib" />
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="compile">
+        <mkdir dir="${build.dir}" />
+        <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="classpath" />
+    </target>
+
+    <target name="test" depends="compile">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes">
+            <classpath>
+                <pathelement path="${build.dir}" />
+                <path refid="classpath" />
+            </classpath>
+            <batchtest todir="${build.dir}">
+                <fileset dir="${src.dir}">
+                    <include name="**/*Test.java" />
+                </fileset>
+            </batchtest>
+            <formatter type="plain" usefile="false" />
+        </junit>
+    </target>
+</project>
     <target depends="init,undeploy-clean,deps-clean,do-clean,check-clean,-post-clean" description="Clean build products." name="clean"/>
     <target depends="clean" description="Clean build products." name="clean-ear"/>
 </project>

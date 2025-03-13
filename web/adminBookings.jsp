@@ -82,42 +82,44 @@
 
                             // Form for the admin to choose driver and update booking status
                 %>
-                    <form method="post" action="updateBookingStatus.jsp">
-                        <tr>
-                            <td><%= customerName %></td>
-                            <td><%= pickupLocation %></td>
-                            <td><%= dropLocation %></td>
-                            <td><%= distance %> km</td>
-                            <td><%= bookingDate %></td>
-                            <td><%= fare %></td>
-                            <td><%= paymentMethod %></td>
-                            <td><%= vehicleType %></td>
-                            <td>
-                                <!-- Dropdown for driver selection based on vehicle type -->
-                                <select name="driver_id" class="form-control">
-                                    <%
-                                        // Fetch drivers for the specific vehicle type
-                                        String driverSql = "SELECT driver_id, full_name FROM drivers WHERE vehicle_type = ?";
-                                        PreparedStatement driverStmt = conn.prepareStatement(driverSql);
-                                        driverStmt.setString(1, vehicleType);
-                                        ResultSet driverRs = driverStmt.executeQuery();
-                                        while (driverRs.next()) {
-                                    %>
-                                        <option value="<%= driverRs.getInt("driver_id") %>">
-                                            <%= driverRs.getString("full_name") %>
-                                        </option>
-                                    <%
-                                        }
-                                    %>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="hidden" name="booking_id" value="<%= bookingId %>" />
-                                <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
-                                <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel</button>
-                            </td>
-                        </tr>
-                    </form>
+                   <form method="post" action="AdminBookingServlet">
+    <tr>
+        <td><%= customerName %></td>
+        <td><%= pickupLocation %></td>
+        <td><%= dropLocation %></td>
+        <td><%= distance %> km</td>
+        <td><%= bookingDate %></td>
+        <td><%= fare %></td>
+        <td><%= paymentMethod %></td>
+        <td><%= vehicleType %></td>
+        <td>
+            <select name="driver_id" class="form-control">
+                <% 
+                    String driverSql = "SELECT driver_id, full_name FROM drivers WHERE vehicle_type = ?";
+                    PreparedStatement driverStmt = conn.prepareStatement(driverSql);
+                    driverStmt.setString(1, vehicleType);
+                    ResultSet driverRs = driverStmt.executeQuery();
+                    while (driverRs.next()) {
+                %>
+                    <option value="<%= driverRs.getInt("driver_id") %>">
+                        <%= driverRs.getString("full_name") %>
+                    </option>
+                <% 
+                    }
+                %>
+            </select>
+        </td>
+        <td>
+            <select name="action" class="form-control">
+                <option value="accept">Accept</option>
+                <option value="cancel">Cancel</option>
+            </select>
+            <input type="hidden" name="booking_id" value="<%= bookingId %>" />
+            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+        </td>
+    </tr>
+</form>
+
                 <%
                         }
                     } catch (SQLException e) {
